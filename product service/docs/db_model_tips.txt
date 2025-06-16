@@ -1,0 +1,8 @@
+✅ 1. Separation of Concerns (by Use Case)
+Each model has a different purpose in the lifecycle of a resource:
+
+        -Model-	                                -Purpose-
+CategoryCreate / ProductCreate - Used when creating a new resource (user input).
+CategoryUpdate / ProductUpdate - Used when updating a resource — all fields optional.
+CategoryInDB   / ProductInDB   - Internal model with fields like id, created_at — not needed from the client.
+CategoryBase   / ProductBase   - Shared fields — reuse common structure, avoid duplication.
