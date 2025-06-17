@@ -1,6 +1,5 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field # type: ignore
 from typing import Optional
-from uuid import UUID
 from datetime import datetime
 
 
@@ -9,9 +8,11 @@ class ProductBase(BaseModel):
     description: Optional[str] = None
     price: float
     stock: int
-    category_id: UUID
-    is_active: bool = True
-
+    category_id: Optional[str] = None
+    status: bool = True
+    delete_flag: bool = True
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 class ProductCreate(ProductBase):
     pass
@@ -22,14 +23,14 @@ class ProductUpdate(BaseModel):
     description: Optional[str]
     price: Optional[float]
     stock: Optional[int]
-    category_id: Optional[UUID]
+    category_id: Optional[str]
     is_active: Optional[bool]
 
 
 class ProductInDB(ProductBase):
-    id: UUID = Field(default_factory=UUID)
+    _id: str
     created_at: datetime
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
