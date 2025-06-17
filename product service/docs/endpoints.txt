@@ -35,10 +35,10 @@ Category APIs
 Example API Usage
 
 * Get all active products under a specific category:
-GET /api/v1/products?category_id=123&is_active=true
+GET /api/products?category_id=123&is_active=true
 
 * Upload product image:
-POST /api/v1/products/123/images
+POST /api/products/123/images
 Body: {
   "url": "https://cdn.mystore.com/product123-main.jpg"
 }
