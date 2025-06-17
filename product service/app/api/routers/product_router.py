@@ -30,7 +30,7 @@ async def patch_product(product_id: UUID, data: ProductUpdate):
     return
 
 @router.delete("/{product_id}", status_code=204)
-async def delete_product(product_id: UUID):
+async def delete_product(product_id: str):
     await product_controller.delete_product(product_id)
     return
 

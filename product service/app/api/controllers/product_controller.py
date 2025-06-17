@@ -1,5 +1,6 @@
 from schemas.product_schema import ProductBase, ProductCreate, ProductInDB, ProductUpdate
 from db.crud import *
+from bson import ObjectId
 from datetime import datetime
 
 collection = "product"
@@ -22,7 +23,7 @@ async def patch_product(id: str, data: ProductUpdate):
     return
 
 async def delete_product(id: str):
-    return
+    return await delete_one(collection, ObjectId(id))
 
 
 
