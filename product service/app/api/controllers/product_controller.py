@@ -24,7 +24,7 @@ async def put_product(id: str, data: ProductUpdate):
 async def patch_product(id: str, data: ProductUpdate):
     await patch_one(collection, id, data.dict())
     patched = await get_one(collection, id)
-    return patched
+    return patched 
 
 async def delete_product(id: str):
     return await delete_one(collection, ObjectId(id))
