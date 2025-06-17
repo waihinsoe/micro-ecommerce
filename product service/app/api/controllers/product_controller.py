@@ -5,7 +5,7 @@ from datetime import datetime
 collection = "product"
 
 async def get_all_products():
-    return
+    return await get_all(collection)
 
 async def create_product(data: ProductCreate):
     product = data.dict()

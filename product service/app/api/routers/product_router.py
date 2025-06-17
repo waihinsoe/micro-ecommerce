@@ -8,7 +8,7 @@ router = APIRouter()
 
 @router.get("/", response_model=list[ProductInDB])
 async def get_all_products():
-    return 
+    return await product_controller.get_all_products()
 
 @router.post("/", response_model=ProductCreate, status_code=201)
 async def create_product(data: ProductCreate):
