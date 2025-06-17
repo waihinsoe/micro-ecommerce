@@ -14,13 +14,17 @@ async def create_product(data: ProductCreate):
     return product
 
 async def get_product(id: str):
-    return
+    return await get_one(collection, id)
 
 async def put_product(id: str, data: ProductUpdate):
-    return
+    await update_one(collection, id, data.dict())
+    updated = await get_one(collection, id)
+    return updated
 
 async def patch_product(id: str, data: ProductUpdate):
-    return
+    await patch_one(collection, id, data.dict())
+    patched = await get_one(collection, id)
+    return patched
 
 async def delete_product(id: str):
     return await delete_one(collection, ObjectId(id))
