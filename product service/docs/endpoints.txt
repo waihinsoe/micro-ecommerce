@@ -10,7 +10,6 @@ Product APIs
 | `PATCH`  | `/products/{product_id}` | Partially update a product                          |
 | `DELETE` | `/products/{product_id}` | Delete a product                                    |
 
-✅ **Filters** (query params for GET `/products/`):
 /products?category_id=abc123&is_active=true&min_price=10&max_price=50&limit=20&page=1
 
 Product Image APIs
@@ -34,10 +33,10 @@ Category APIs
 
 Example API Usage
 
-* Get all active products under a specific category:
+-Get all active products under a specific category:
 GET /api/products?category_id=123&is_active=true
 
-* Upload product image:
+-Upload product image:
 POST /api/products/123/images
 Body: {
   "url": "https://cdn.mystore.com/product123-main.jpg"
