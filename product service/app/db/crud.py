@@ -14,6 +14,19 @@ async def update_one(collection_name: str, id: str, data: dict):
         return True
     return False
 
+async def patch_one(collection_name: str, id: str, data: dict):
+    collection = get_collection(collection_name)
+    update_data = {k:v for k, v in data.items() if v is not None}
+    if not update_data:
+        return None
+    result = await collection.update_one(
+        {"_id": ObjectId(id)},
+        {"$set": update_data}
+    )
+    if result.modified_count == 1:
+        return await collection.find_one({"_id": ObjectId(id)})
+    return None
+
 async def get_one(collection_name: str, id: str):
     collection = get_collection(collection_name)
     doc = await collection.find_one({"_id": ObjectId(id)})

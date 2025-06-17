@@ -15,19 +15,25 @@ async def create_product(data: ProductCreate):
     return await product_controller.create_product(data)
 
 @router.get("/{product_id}", response_model=ProductInDB)
-async def get_product(product_id: UUID):
+async def get_product(product_id: str):
     product = await product_controller.get_product(product_id)
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     return product
 
 @router.put("/{product_id}", response_model=ProductInDB)
-async def put_product(product_id: UUID, data: ProductUpdate):
-    return 
+async def put_product(product_id: str, data: ProductUpdate):
+    product = await product_controller.put_product(product_id, data)
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return product
 
 @router.patch("/{product_id}", response_model=ProductInDB)
-async def patch_product(product_id: UUID, data: ProductUpdate):
-    return
+async def patch_product(product_id: str, data: ProductUpdate):
+    product = await product_controller.patch_product(product_id, data)
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return product 
 
 @router.delete("/{product_id}", status_code=204)
 async def delete_product(product_id: str):

@@ -24,7 +24,8 @@ class ProductUpdate(BaseModel):
     price: Optional[float]
     stock: Optional[int]
     category_id: Optional[str]
-    is_active: Optional[bool]
+    status: Optional[bool]
+    updated_at: datetime
 
 
 class ProductInDB(ProductBase):
