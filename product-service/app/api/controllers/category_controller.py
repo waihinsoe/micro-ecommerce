@@ -1,41 +1,39 @@
-from fastapi import APIRouter, HTTPException #type:ignore
-from schemas.category_schema import CategoryCreate, CategoryUpdate, CategoryInDB
-from ..controllers import category_controller
+from schemas.category_schema import CategoryBase, CategoryCreate, CategoryInDB, CategoryUpdate
+from db.crud import *
+from bson import ObjectId
+from datetime import datetime
 
-router = APIRouter()
+collection = "category"
 
-
-@router.get("/", response_model=list[ProductInDB])
 async def get_all_categories():
-    return await product_controller.get_all_products()
+    return await get_all(collection)
 
-@router.post("/", response_model=ProductCreate, status_code=201)
-async def create_category(data: ProductCreate):
-    return await product_controller.create_product(data)
+async def create_category(data: CategoryCreate):
+    category = data.dict()
+    get_all_categories = await get_all(collection)
+    for cat in get_all_categories:
+        if cat['name'] == category['name']:
+            return None
+    result = await create(collection, category)
+    return category
 
-@router.get("/{product_id}", response_model=ProductInDB)
-async def get_category(product_id: str):
-    product = await product_controller.get_product(product_id)
-    if not product:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return product
+async def get_category(id: str):
+    return await get_one(collection, id)
 
-@router.put("/{product_id}", response_model=ProductInDB)
-async def put_product(product_id: str, data: ProductUpdate):
-    product = await product_controller.put_product(product_id, data)
-    if not product:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return product
+async def put_category(id: str, data: CategoryUpdate):
+    await update_one(collection, id, data.dict())
+    updated = await get_one(collection, id)
+    print("updated:", updated)
+    return updated
 
-@router.patch("/{product_id}", response_model=ProductInDB)
-async def patch_product(product_id: str, data: ProductUpdate):
-    product = await product_controller.patch_product(product_id, data)
-    if not product:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return product 
+async def patch_category(id: str, data: CategoryUpdate):
+    await patch_one(collection, id, data.dict())
+    patched = await get_one(collection, id)
+    return patched 
 
-@router.delete("/{product_id}", status_code=204)
-async def delete_product(product_id: str):
-    await product_controller.delete_product(product_id)
-    return
+async def delete_category(id: str):
+    return await delete_one(collection, ObjectId(id))
+
+
+
 

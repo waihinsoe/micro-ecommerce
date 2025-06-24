@@ -8,16 +8,18 @@ class CategoryBase(BaseModel):
     description: Optional[str] = None
     parent_id: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 
 class CategoryCreate(CategoryBase):
     pass
 
 
-class CategoryUpdate(CategoryBase):
+class CategoryUpdate(BaseModel):
     name: Optional[str]
     description: Optional[str]
     parent_id: Optional[str]
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 
 class CategoryInDB(CategoryBase):

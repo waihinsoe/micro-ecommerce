@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware # type: ignore
 # from app.api.routers.product_router import router as product_router
 from api.routers.product_router import router as product_router # type: ignore
 # from app.api.routers.image_router import router as image_router
-from app.api.routers.category_router import router as category_router
+from api.routers.category_router import router as category_router
 
 app = FastAPI(title="Product Service API")
 
