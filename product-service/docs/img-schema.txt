@@ -1,0 +1,11 @@
+{
+  "_id": "image123",
+  "product_id": "product_abc123",
+  "image_url": "https://res.cloudinary.com/yourcloud/image/upload/v123456/image1.jpg",
+  "alt_text": "Front view", (optional)
+  "position": 1,(total-6)
+  "is_main": true,
+  "created_at": "2025-06-24T12:00:00Z",
+  "updated_at": "2025-06-24T12:00:00Z",
+  "delete_flag": true/false,
+}
