@@ -10,7 +10,7 @@ class ProductBase(BaseModel):
     stock: int
     category_id: Optional[str] = None
     status: bool = True
-    delete_flag: bool = True
+    delete_flag: bool = False
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
@@ -26,6 +26,7 @@ class ProductUpdate(BaseModel):
     category_id: Optional[str]
     status: Optional[bool]
     updated_at: datetime
+    delete_flag: Optional[bool]
 
 
 class ProductInDB(ProductBase):
