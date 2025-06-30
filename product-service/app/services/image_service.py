@@ -72,16 +72,13 @@ async def fake_delete_product_image(product_id: str):
 
         for image in images:
             await patch_one(collection, image['_id'], {"delete_flag": True})
-
         return {"message": "Images marked as deleted successfully"}
     except Exception as e:
         raise Exception(f"Failed to mark images as deleted: {str(e)}") from e
 
 async def delete_product_image(product_id: str):
     try:
-        # Fetch all images for the product
-        images = await get_all(collection, {"product_id": product_id})
-        
+        images = await find(collection, product_id)
         if not images:
             raise Exception("No images found for this product")
 
@@ -89,7 +86,21 @@ async def delete_product_image(product_id: str):
         for image in images:
             cloudinary.uploader.destroy(image['public_id'])
             await delete_one(collection, image['_id'])
-
-        return {"message": "Images deleted successfully"}
+        return {"message": "Images deleted successfully by admin"}
     except Exception as e:
         raise Exception(f"Failed to delete images: {str(e)}") from e
+    
+async def get_product_images(product_id: str):
+    try:
+        images = await find(collection, product_id)
+        if not images:
+            raise Exception("No images found for this product")
+        
+        # Convert ObjectId to string for JSON serialization
+        for image in images:
+            image['_id'] = str(image['_id'])
+        
+        print(f"Retrieved images: {images}")
+        return images
+    except Exception as e:
+        raise Exception(f"Failed to retrieve images: {str(e)}") from e
