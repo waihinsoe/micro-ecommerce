@@ -1,9 +1,5 @@
-from db.crud import *
-from bson import ObjectId
-from datetime import datetime
 from fastapi import UploadFile
 from services import image_service
-
 from typing import List
 
 

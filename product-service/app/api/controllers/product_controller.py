@@ -1,33 +1,23 @@
-from schemas.product_schema import ProductBase, ProductCreate, ProductInDB, ProductUpdate
-from db.crud import *
-from bson import ObjectId
-from datetime import datetime
-
-collection = "product_collection"
+from services import product_service
+from schemas.product_schema import ProductCreate, ProductInDB, ProductUpdate
 
 async def get_all_products():
-    return await get_all(collection)
+    return await product_service.get_all_products()
 
 async def create_product(data: ProductCreate):
-    product = data.dict()
-    result = await create(collection, product)
-    return product
+    return await product_service.create_product(data)
 
 async def get_product(id: str):
-    return await get_one(collection, id)
+    return await get_product(id)
 
 async def put_product(id: str, data: ProductUpdate):
-    await update_one(collection, id, data.dict())
-    updated = await get_one(collection, id)
-    return updated
+    return await product_service.put_product(id, data)
 
 async def patch_product(id: str, data: ProductUpdate):
-    await patch_one(collection, id, data.dict())
-    patched = await get_one(collection, id)
-    return patched 
+    return await product_service.patch_product(id, data)
 
-async def delete_product(id: str):
-    return await delete_one(collection, ObjectId(id))
+async def delete_product(id: str):  
+    return await delete_product(id)
 
 
 

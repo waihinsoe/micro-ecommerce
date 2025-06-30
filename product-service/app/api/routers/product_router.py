@@ -35,8 +35,8 @@ async def patch_product(product_id: str, data: ProductUpdate):
         raise HTTPException(status_code=404, detail="Product not found")
     return product 
 
+# Delete for admin user
 @router.delete("/{product_id}", status_code=204)
 async def delete_product(product_id: str):
     await product_controller.delete_product(product_id)
     return
-
