@@ -1,0 +1,2 @@
+product မှာ saler delete / admin delete သပ်သပ်ထည့်ရမယ်.
+

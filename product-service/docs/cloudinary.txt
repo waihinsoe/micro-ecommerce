@@ -1,0 +1,95 @@
+Response format 
+{
+  "asset_id": "uuid",
+  "public_id": "uploaded_file_name",
+  "version": 1234567890,
+  "width": 800,
+  "height": 600,
+  "format": "jpg",
+  "resource_type": "image",
+  "secure_url": "https://res.cloudinary.com/your_cloud/image/upload/v1234567890/uploaded_file.jpg"
+}
+
+$ pip install cloudinary
+
+1.Configure cloudinary
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+cloudinary.config(
+  cloud_name="YOUR_CLOUD_NAME",
+  api_key="YOUR_API_KEY",
+  api_secret="YOUR_API_SECRET"
+)
+
+2.Upload Section
+-From Local File-
+response = cloudinary.uploader.upload("local-img.jpg")
+print(response["secure_url"])
+
+-From File in FastAPI-
+from fastapi import FastAPI, File, uploaded_file
+import cloudinary.uploader
+
+app = FastAPI()
+
+@app.post("/upload-image/")
+async def upload_image(file: UploadFile = File(...)):
+    contents = await file.read()
+    result = cloudinary.uploader.upload(contents, resource_type="image")
+    return {"url": resul["secure_url"]}
+
+✅ Use secure_url to display or use the image
+-This is the full HTTPS URL of the image.
+-You can directly embed it in HTML, frontend apps, or return it from your API.
+Example:
+{
+  "secure_url": "https://res.cloudinary.com/demo/image/upload/v1719329301/sample.jpg"
+}
+
+In HTML or frontend:
+<img src="https://res.cloudinary.com/demo/image/upload/v1719329301/sample.jpg" />
+
+✅ Use public_id for Cloudinary operations
+-Needed if you want to:
+-Delete the image
+-Update (overwrite)
+-Generate transformed URLs manually
+-Organize/search in Cloudinary dashboard
+Example:
+{
+  "public_id": "products/sample"
+}
+You can manually build a URL like this:
+https://res.cloudinary.com/<cloud_name>/image/upload/<transformation>/<public_id>.<format>
+
+Example:
+https://res.cloudinary.com/demo/image/upload/w_300/products/sample.jpg
+
+
+🔁 Summary:
+Use Case	              |  Use secure_url	    |   Use public_id
+Show/display image	      |     ✅ Yes	       |       ❌ No
+Save for future rendering |     ✅ Recommended  |       ✅ (optional)
+Delete/update image	      |     ❌ No	       |       ✅ Yes
+Create transformed URLs	  |     ❌ (too late)   |       ✅ Yes
+
+
+
+
+@router.post("/{product_id}/images/", status_code=201)
+async def upload_image(product_id: str, file: UploadFile = File(...)):
+    try:
+        # Upload the image to Cloudinary
+        upload_result = cloudinary.uploader.upload(file.file, folder=f"products/{product_id}/images")
+        
+        # Return the image URL and other details
+        return {
+            "product_id": product_id,
+            "image_url": upload_result['secure_url'],
+            "public_id": upload_result['public_id'],
+            "format": upload_result['format']
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

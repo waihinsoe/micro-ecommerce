@@ -1,6 +1,4 @@
-#!/bin/sh
-'''exec' "/home/wz/Desktop/micro ecommerce/product service/.venv/bin/python" "$0" "$@"
-' '''
+#!/home/wz/Desktop/micro-ecommerce/product-service/.venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

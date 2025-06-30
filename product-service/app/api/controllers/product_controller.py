@@ -3,7 +3,7 @@ from db.crud import *
 from bson import ObjectId
 from datetime import datetime
 
-collection = "product"
+collection = "product_collection"
 
 async def get_all_products():
     return await get_all(collection)

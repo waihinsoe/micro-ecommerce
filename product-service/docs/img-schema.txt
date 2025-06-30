@@ -1,0 +1,41 @@
+{
+  "_id": "image123",
+  "product_id": "product_abc123",
+  "image_url": "https://res.cloudinary.com/yourcloud/image/upload/v123456/image1.jpg",
+  "position": 1,(total-6)
+  "is_main": true,
+  "created_at": "2025-06-24T12:00:00Z",
+  "updated_at": "2025-06-24T12:00:00Z",
+  "delete_flag": true/false,
+}
+
+In Local DB
+{
+  "product_id": "123",
+  "images": [
+    {
+      "url": "https://res.cloudinary.com/demo/image/upload/abcxyz.jpg",
+      "public_id": "products/123/images/abcxyz",
+      "position": 1
+    },
+    {
+      "url": "...",
+      "public_id": "...",
+      "position": 2
+    }
+  ]
+}
+
+
+
+Example FastAPI + MongoDB aggregation:
+product = await db.products.aggregate([
+    {"$match": {"_id": ObjectId(product_id)}},
+    {"$lookup": {
+        "from": "product_images",
+        "localField": "_id",
+        "foreignField": "product_id",
+        "as": "images"
+    }},
+    {"$sort": {"images.position": 1}}
+]).to_list(length=1)
