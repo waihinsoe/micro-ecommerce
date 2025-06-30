@@ -8,18 +8,12 @@ class ProductImageBase(BaseModel):
     image_url: str # get from cloudinary
     public_id: str # get from cloudinary
     position: int
+    format: str # get from cloudinary
     created_at: datetime = Field(default_factory=datetime.utcnow)
     delete_flag: bool = False
 
 class ProductImageCreate(ProductImageBase):
     pass
-
-
-class ProductImageUpdate(BaseModel):
-    image_url: Optional[str]
-    public_id: Optional[str]
-    position: Optional[int]
-
 
 class ProductImageInDB(ProductImageBase):
     _id: str

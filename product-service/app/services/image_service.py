@@ -1,14 +1,12 @@
-import cloudinary
-import cloudinary.uploader
-from fastapi import UploadFile
-from schemas.image_schema import ProductImageCreate, ProductImageInDB, ProductImageUpdate
+import cloudinary # type:ignore
+import cloudinary.uploader #type:ignore
+from fastapi import UploadFile # type:ignore
+from schemas.image_schema import ProductImageCreate, ProductImageInDB
 from db.crud import *
 from core.config import settings
+from typing import List
 
-import logging
-
-
-logger = logging.getLogger(__name__)
+from utils.image_tools import resize_and_compress_image
 
 collection = "product_image_collection"
 
@@ -19,34 +17,79 @@ cloudinary.config(
     secure = True
 )
 
-async def upload_images_to_cloudinary(product_id: str, position: int, file: UploadFile):
+async def upload_images_to_cloudinary(product_id: str, images: List[UploadFile]):
+    uploaded_images = []
     try:
-        logger.info("Image Service is ready")
-        # Upload the image to Cloudinary
-        upload_result = cloudinary.uploader.upload(
-            file.file,
-            folder=f"products/{product_id}/images",
-            use_filename=True,
-            unique_filename=False
-        )
+        count = 1
+        for image in images:
+            original_bytes = await image.read()
+            resized_image = resize_and_compress_image(original_bytes, 1080, 85)
 
-        print(f"Upload result: {upload_result}")
+            upload_result = cloudinary.uploader.upload(
+                resized_image,
+                folder=f"products/{product_id}/images",
+                format="jpg",
+            )
 
-        create_data = ProductImageCreate(
-            product_id=product_id,
-            image_url=upload_result['secure_url'],
-            public_id=upload_result['public_id'],
-            position=position,
-        )
-        print(f"Create data: {create_data}")
-        
-        await create(collection, create_data.dict())
+            print(f"Upload result: {upload_result}")
 
-        # Return the upload result
-        return {
-            "image_url": upload_result['secure_url'],
-            "public_id": upload_result['public_id'],
-            "format": upload_result['format']
-        }
+            create_data = ProductImageCreate(
+                product_id=product_id,
+                image_url=upload_result['secure_url'],
+                public_id=upload_result['public_id'],
+                position=count,
+                format=upload_result['format'],
+            )
+            print(f"\nCreate data: {create_data}")
+            
+            created_image = await create(collection, create_data.dict())
+
+            uploaded_images.append({
+                "id": str(created_image.inserted_id),
+                "product_id": product_id,
+                "image_url": upload_result['secure_url'],
+                "position": count,
+                "format": upload_result['format']
+            })
+            count += 1
+
+            # Return the upload result
+            # return {
+            #     "image_url": upload_result['secure_url'],
+            #     "public_id": upload_result['public_id'],
+            #     "format": upload_result['format']
+            # }
+        print(f"Uploaded images: {uploaded_images}")
+        return uploaded_images
     except Exception as e:
         raise Exception(f"Failed to upload image: {str(e)}") from e
+    
+async def fake_delete_product_image(product_id: str):
+    try:
+        images = await find(collection, product_id)        
+        if not images:
+            raise Exception("No images found for this product")
+
+        for image in images:
+            await patch_one(collection, image['_id'], {"delete_flag": True})
+
+        return {"message": "Images marked as deleted successfully"}
+    except Exception as e:
+        raise Exception(f"Failed to mark images as deleted: {str(e)}") from e
+
+async def delete_product_image(product_id: str):
+    try:
+        # Fetch all images for the product
+        images = await get_all(collection, {"product_id": product_id})
+        
+        if not images:
+            raise Exception("No images found for this product")
+
+        # Delete each image from Cloudinary and the database
+        for image in images:
+            cloudinary.uploader.destroy(image['public_id'])
+            await delete_one(collection, image['_id'])
+
+        return {"message": "Images deleted successfully"}
+    except Exception as e:
+        raise Exception(f"Failed to delete images: {str(e)}") from e
