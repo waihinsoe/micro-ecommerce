@@ -6,7 +6,10 @@ router = APIRouter()
 @router.post("/{product_id}/images/", status_code=201)
 async def upload_image(product_id: str, position: int, file: UploadFile = File(...)):
     try:
-        return await image_controller.upload_product_images(product_id, position, file)
+        if(position > 6):
+            raise HTTPException(status_code=400, detail="Position must be between 1 to 6")
+        else:
+            return await image_controller.upload_product_images(product_id, position, file)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
