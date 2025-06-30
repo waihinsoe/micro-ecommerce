@@ -1,15 +1,17 @@
-from fastapi import APIRouter, File, UploadFile, HTTPException
+from fastapi import APIRouter, File, UploadFile, HTTPException #type:ignore
 from ..controllers import image_controller
+
+from typing import List
 
 router = APIRouter()
 
 @router.post("/{product_id}/images/", status_code=201)
-async def upload_image(product_id: str, position: int, file: UploadFile = File(...)):
+async def upload_image(product_id: str, images: List[UploadFile]):
     try:
-        if(position > 6):
+        if(len(images) > 6):
             raise HTTPException(status_code=400, detail="Position must be between 1 to 6")
         else:
-            return await image_controller.upload_product_images(product_id, position, file)
+            return await image_controller.upload_product_images(product_id, images)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
@@ -29,12 +31,18 @@ async def upload_image(product_id: str, position: int, file: UploadFile = File(.
 #         ]
 #     except Exception as e:
 #         raise HTTPException(status_code=500, detail=str(e))
+
+# Fake Delete For Saler
+@router.put("/{product_id}/images/", status_code=204)
+async def fake_delete_image(product_id: str):
+    try:
+        return await image_controller.fake_delete_product_image(product_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
     
-# @router.delete("/{product_id}/images/{public_id}", status_code=204)
-# async def delete_image(product_id: str, public_id: str):
-#     try:
-#         # Delete the image from Cloudinary
-#         cloudinary.uploader.destroy(public_id)
-#         return
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
+@router.delete("/{product_id}/images/", status_code=204)
+async def delete_image(product_id: str):
+    try:
+        return await image_controller.delete_product_image(product_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

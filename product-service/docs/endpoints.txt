@@ -13,11 +13,11 @@ Product APIs
 /products?category_id=abc123&is_active=true&min_price=10&max_price=50&limit=20&page=1
 
 Product Image APIs
-| Method   | Endpoint                                   | Description                  |
-| -------- | ------------------------------------------ | ---------------------------- |
-| `POST`   | `/products/{product_id}/images/`           | Add a new image to a product |
-| `GET`    | `/products/{product_id}/images/`           | List images of a product     |
-| `DELETE` | `/products/{product_id}/images/{image_id}` | Delete a product image       |
+| Method   | Endpoint                                   | Description                      |
+| -------- | ------------------------------------------ | ---------------------------------|
+| `POST`   | `/products/{product_id}/images/`           | Add multiple images to a product |
+| `GET`    | `/products/{product_id}/images/`           | List images of a product         |
+| `DELETE` | `/products/{product_id}/images/{image_id}` | Delete a product image           |
 
 
 Category APIs

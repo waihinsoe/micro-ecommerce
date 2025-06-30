@@ -60,3 +60,12 @@ async def delete_one(collection_name: str, id: ObjectId):
     if result.deleted_count == 1:
         return True
     return False
+
+async def find(collection_name: str, product_id: str):
+    collection = get_collection(collection_name)
+    doc = collection.find({"product_id": product_id})
+    images = await doc.to_list(length=6)
+    print(f"Images found: {images}")
+    if doc:
+        return images
+    return "No images found for this product"

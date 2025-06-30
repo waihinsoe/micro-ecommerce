@@ -39,3 +39,9 @@ product = await db.products.aggregate([
     }},
     {"$sort": {"images.position": 1}}
 ]).to_list(length=1)
+
+
+Frontend sends images in order:
+images[0] → position 0
+images[1] → position 1
+images[2] → position 2
