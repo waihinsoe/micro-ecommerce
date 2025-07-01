@@ -1,4 +1,4 @@
-from schemas.product_schema import ProductBase, ProductCreate, ProductInDB, ProductUpdate
+from schemas.product_schema import ProductCreate, ProductInDB, ProductUpdate
 from db.crud import *
 from bson import ObjectId
 from datetime import datetime
